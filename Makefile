@@ -27,11 +27,11 @@ BUILD_FILE = project.mk
 
 all:
 	@echo Building default target for $(PRODUCT_NAME), PCB $(PCBVER)
-	@docker run -t -v $(CURDIR):/build -w /build -e "PRODUCT_ID=$(PRODUCT_ID)" -e "PCBVER=$(PCBVER)" -e "PRODUCT_NAME=$(PRODUCT_NAME)" -e "PRODUCT_BOOTLOADER_NAME=$(PRODUCT_BOOTLOADER_NAME)" "$(BUILD_ENVIRONMENT)" $(MAKE) -f $(BUILD_FILE)
+	@docker run -t -v $(CURDIR):/build -w /build -e "PRODUCT_ID=$(PRODUCT_ID)" -e "PCBVER=$(PCBVER)" -e "PRODUCT_NAME=$(PRODUCT_NAME)" -e "PRODUCT_BOOTLOADER_NAME=$(PRODUCT_BOOTLOADER_NAME)" "$(BUILD_ENVIRONMENT)" make -f $(BUILD_FILE)
 
 $(TARGETS):
 	@echo Building target $@ for $(PRODUCT_NAME), PCB $(PCBVER)
-	@docker run -t -v $(CURDIR):/build -w /build -e "PRODUCT_ID=$(PRODUCT_ID)" -e "PCBVER=$(PCBVER)" -e "PRODUCT_NAME=$(PRODUCT_NAME)" -e "PRODUCT_BOOTLOADER_NAME=$(PRODUCT_BOOTLOADER_NAME)" "$(BUILD_ENVIRONMENT)" $(MAKE) -f $(BUILD_FILE) $@
+	@docker run -t -v $(CURDIR):/build -w /build -e "PRODUCT_ID=$(PRODUCT_ID)" -e "PCBVER=$(PCBVER)" -e "PRODUCT_NAME=$(PRODUCT_NAME)" -e "PRODUCT_BOOTLOADER_NAME=$(PRODUCT_BOOTLOADER_NAME)" "$(BUILD_ENVIRONMENT)" make -f $(BUILD_FILE) $@
 
 
 COMPLETE_HEX = latest.hex
