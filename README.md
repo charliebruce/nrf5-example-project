@@ -57,20 +57,28 @@ script:
   - make PRODUCT_ID=$PRODUCT_ID PCBVER=$PCBVER
 ```
 
-In this case the root Makefile will automatically select the correct Docker image, etc from `products.mk`
+For Github Actions, a similar syntax can be used, however the matrix strategy isn't as flexible. This can be worked around using `cut`:
 
-If your build server is incapable of launching new Docker instances (eg Github Actions) you will need to call `project.mk` in each environment:
+``` build.yml
 
-``` main.workflow
-
-action "Build Firmware (Hardware 1.1)" {                                                                           
-  uses = "docker://charliebruce/nrf5-docker-build:sdk-15.2.0"                                                      
-  runs = ["sh", "-c", "make -f project.mk PRODUCT_ID=1 PCBVER=1 clean && make -f project.mk PRODUCT_ID=1 PCBVER=1"]    
-}
-
-action "Build Firmware (Hardware 1.2)" {                                                                           
-  uses = "docker://charliebruce/nrf5-docker-build:sdk-15.2.0"                                                      
-  runs = ["sh", "-c", "make -f project.mk PRODUCT_ID=1 PCBVER=2 clean && make -f project.mk PRODUCT_ID=1 PCBVER=2"]    
-}
-
+build:
+  name: Build
+  runs-on: ubuntu-latest
+  strategy:
+    matrix:
+      combined_ver: ["1.1", "1.2", "2.1", "2.2"]
+  steps:
+  - name: Check out code
+    uses: actions/checkout@v2     
+  - name: Set up environment variables
+    env:
+      COMBINED_VER: ${{ matrix.combined_ver }}
+    run: |
+      echo "::set-env name=PRODUCT_ID::$(cut -d'.' -f1 <<<$COMBINED_VER)"
+      echo "::set-env name=PCBVER::$(cut -d'.' -f2 <<<$COMBINED_VER)"
+  - name: Build (Hardware ${{ matrix.combined_ver }})
+    run: |
+      echo "Building firmware $VERSION for product $PRODUCT_ID - PCB $PCBVER"
+      make clean
+      make
 ```
