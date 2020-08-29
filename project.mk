@@ -17,6 +17,13 @@ A = $(PRODUCT_ID)
 B = $(PCBVER)
 COMBINED_PRODUCT_HARDWARE_VERSION=$(shell echo $$(($A*256+$B)))
 
+# Identify the number of processors present on the build machine. Use this to set the number of jobs for best performance.
+NUMPROC := $(shell grep -c "processor" /proc/cpuinfo)
+ifeq ($(NUMPROC),0)
+        NUMPROC = 1
+endif
+NUMJOBS := $(shell echo $$(($(NUMPROC)*2)))
+
 
 .PHONY: all clean
 all:
@@ -24,8 +31,8 @@ all:
 	@echo "project.mk is building for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
 	
 	# Build the sub-projects
-	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/pca10040/s132/armgcc
-	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/pca10040_ble/armgcc
+	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/pca10040/s132/armgcc
+	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/pca10040_ble/armgcc
 	
 	# Make the artefacts directory if it does not exist
 	mkdir -p artefacts
