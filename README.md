@@ -25,7 +25,12 @@ You will need to:
 2. Update example project Makefile(s):
 	- `-DNRF_DFU_HW_VERSION=$(COMBINED_PRODUCT_HARDWARE_VERSION)` added to CFLAGS / ASMFLAGS in the bootloader Makefile (and `COMBINED_PRODUCT_HARDWARE_VERSION` may need to be passed to the Makefile - TODO: Confirm this)
 3. Configure the `project.mk` Makefile to build the example apps
-4. Set up app-specific changes (eg DFU private key)
+4. Set up app-specific changes (eg DFU private key setup):
+`
+nrfutil keys generate private.pem
+nrfutil keys display --key pk --format code private.pem --out_file boot/dfu_public_key.c
+`
+
 5. Configure `products.mk` based on the current range of products and PCB versions
 
 To build the firmware, run `make`. Each sub-project will be built, and then `project.mk` will build the relevant artefacts (App DFU package and combined hex). 
