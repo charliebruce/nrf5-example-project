@@ -42,6 +42,7 @@ all:
 	
 	# Build the sub-projects
 	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/$(BOARD)/$(SD_TYPE)/armgcc
+	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C dtm/src/$(BOARD)/blank/armgcc
 	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/$(BOARD)_ble/armgcc
 	
 	# Make the artefacts directory if it does not exist
@@ -62,6 +63,7 @@ clean:
 	@echo "project.mk is cleaning for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
 	rm -rf hex/
 	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/$(BOARD)/$(SD_TYPE)/armgcc clean
+	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C dtm/src/$(BOARD)/blank/armgcc clean
 	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/$(BOARD)_ble/armgcc clean
 	rm $(ARTEFACTS_DIR)/img-$(VERSION_IDENTIFIER).hex
 	rm $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip

@@ -21,7 +21,10 @@ You will need the following software:
 
 You will need to:
 
-1. Copy nRF5 example(s) from the nRF5 SDK into the project - eg `examples/dfu/secure_bootloader` -> `boot`, `examples/ble_peripheral/ble_app_uart` -> `app`
+1. Copy nRF5 example(s) from the nRF5 SDK into the project:
+    * `examples/ble_peripheral/ble_app_uart` -> `app`
+    * `examples/dfu/secure_bootloader` -> `boot`
+    * `examples/dtm/direct_test_mode` -> `dtm`
 2. Update example project Makefile(s):
 	- `-DNRF_DFU_HW_VERSION=$(COMBINED_PRODUCT_HARDWARE_VERSION)` added to CFLAGS / ASMFLAGS in the bootloader Makefile (and `COMBINED_PRODUCT_HARDWARE_VERSION` may need to be passed to the Makefile - TODO: Confirm this)
 3. Configure the `project.mk` Makefile to build the example apps
