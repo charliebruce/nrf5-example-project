@@ -2,3 +2,4 @@
 artefacts/*
 tmp/*
 *.hex
+*_build*
