@@ -40,13 +40,14 @@ To build the firmware, run `make`. Each sub-project will be built, and then `pro
 
 To flash the hex using a JLink (external or on development board), run `make flash`.
 
-To flash the app package to a remote development board via DFU, run `make flash_dfu`. You will need an nRF5 dongle or development board with the correct connectivity firmware flashed.
+To flash the app package to a remote development board via DFU, run `make flash_dfu`. You will need an nRF5 dongle or development board with the correct connectivity firmware flashed and your application will need to support Buttonless DFU (or you will need to add a script that runs in advance to put the device into DFU mode).
 
 ## Notes
 
 Overrides default Makefile values with the following:
 * SDK_ROOT - set to match the location of the nRF5 SDK in the Docker image. If you need to patch a bug in the SDK, you will need to copy this in to your project and update the path(s).
 * OUTPUT_DIRECTORY - this is overridden to be specific to a Product and PCB version (ensures correct results even if building for different products/variants without running `make clean` inbetween.
+* PASS_LINKER_INPUT_VIA_FILE - this is set to 0 to enable parallel builds
 
 ## Continuous Integration
 
