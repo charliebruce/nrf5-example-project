@@ -1,15 +1,25 @@
 # This Makefile is called within the Docker environment
 # It should be used for building the firmware binaries
 
+# Configure as required here
+CHIP=nrf52832_xxaa
+BOARD=pca10040
+SD_TYPE=s132
+SD_VERSION=6.1.0
+SD_VERSION_HEX=0xAF # Run `nrfutil pkg generate --help` for a list 
+SDK_ROOT=/nrf5/nRF5_SDK_15.2.0
+
+# Directories used to store files
 TEMP_DIR = tmp
 ARTEFACTS_DIR = artefacts
 
-SDK_ROOT=/nrf5/nRF5_SDK_15.2.0
-APPLICATION = app/src/pca10040/s132/armgcc/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/nrf52832_xxaa.hex
-BOOTLOADER = boot/bootloader_secure/pca10040_ble/armgcc/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/nrf52832_xxaa_s132.hex
-SOFTDEVICE = $(SDK_ROOT)/components/softdevice/s132/hex/s132_nrf52_6.1.0_softdevice.hex
+# Files generated as part of the build process
+APPLICATION = app/src/$(BOARD)/$(SD_TYPE)/armgcc/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/$(CHIP).hex
+BOOTLOADER = boot/bootloader_secure/$(BOARD)_ble/armgcc/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/$(CHIP)_$(SD_TYPE).hex
+SOFTDEVICE = $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/hex/$(SD_TYPE)_nrf52_$(SD_VERSION)_softdevice.hex
 BL_SETTINGS = $(TEMP_DIR)/bootloadersettings.hex
 
+# Human-readable identifier for artefacts
 VERSION_IDENTIFIER = $(PRODUCT_NAME)-$(PRODUCT_ID).$(PCBVER)
 
 # Combined version is a single number which combines both the Product ID and PCB revision. Useful for bootloader hardware version number...
@@ -31,14 +41,14 @@ all:
 	@echo "project.mk is building for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
 	
 	# Build the sub-projects
-	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/pca10040/s132/armgcc
-	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/pca10040_ble/armgcc
+	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/$(BOARD)/$(SD_TYPE)/armgcc
+	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/$(BOARD)_ble/armgcc
 	
 	# Make the artefacts directory if it does not exist
 	mkdir -p artefacts
 	
 	# Build the DFU package from the app
-	nrfutil pkg generate --hw-version $(COMBINED_PRODUCT_HARDWARE_VERSION) --application-version 1 --application $(APPLICATION) --sd-req 0xAF --key-file private.pem $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
+	nrfutil pkg generate --hw-version $(COMBINED_PRODUCT_HARDWARE_VERSION) --application-version 1 --application $(APPLICATION) --sd-req $(SD_VERSION_HEX) --key-file private.pem $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
 	
 	# Merge hex files to form a complete package
 	# In order to boot into the app immediately after flashing, the bootloader's settings page needs to be written
@@ -51,7 +61,7 @@ all:
 clean:
 	@echo "project.mk is cleaning for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
 	rm -rf hex/
-	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/pca10040/s132/armgcc clean
-	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/pca10040_ble/armgcc clean
+	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C app/src/$(BOARD)/$(SD_TYPE)/armgcc clean
+	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C boot/bootloader_secure/$(BOARD)_ble/armgcc clean
 	rm $(ARTEFACTS_DIR)/img-$(VERSION_IDENTIFIER).hex
 	rm $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
