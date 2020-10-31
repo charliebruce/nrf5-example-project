@@ -6,7 +6,7 @@ CHIP=nrf52832_xxaa
 BOARD=pca10040
 SD_TYPE=s132
 SD_VERSION=6.1.0
-SD_VERSION_HEX=0xAF # Run `nrfutil pkg generate --help` for a list
+SD_FWID=0xAF # Look in $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/doc/
 SDK_ROOT=/nrf5/nRF5_SDK_15.2.0
 
 # Directories used to store files
@@ -52,7 +52,7 @@ all:
 	mkdir -p artefacts
 	
 	# Build the DFU package from the app
-	nrfutil pkg generate --hw-version $(COMBINED_PRODUCT_HARDWARE_VERSION) --application-version 1 --application $(APPLICATION) --sd-req $(SD_VERSION_HEX) --key-file private.pem $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
+	nrfutil pkg generate --hw-version $(COMBINED_PRODUCT_HARDWARE_VERSION) --application-version 1 --application $(APPLICATION) --sd-req $(SD_FWID) --key-file private.pem $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
 	
 	# Merge hex files to form a complete package
 	# In order to boot into the app immediately after flashing, the bootloader's settings page needs to be written
