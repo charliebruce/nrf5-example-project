@@ -3,6 +3,7 @@
 
 # Configure as required here
 CHIP=nrf52832_xxaa
+FAMILY=NRF52 # Note that this must be NRF52840 if using this chip
 BOARD=pca10040
 SD_TYPE=s132
 SD_VERSION=6.1.0
@@ -23,7 +24,7 @@ SOFTDEVICE = $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/hex/$(SD_TYPE)_nrf52_$
 BL_SETTINGS = $(TEMP_DIR)/bootloadersettings.hex
 
 # Human-readable identifier for artefacts
-VERSION_IDENTIFIER = $(PRODUCT_NAME)-$(PRODUCT_ID).$(PCBVER)
+VERSION_IDENTIFIER = $(PRODUCT_ID).$(PCBVER)
 
 # Combined version is a single number which combines both the Product ID and PCB revision. Useful for bootloader hardware version number...
 A = $(PRODUCT_ID)
@@ -40,7 +41,7 @@ NUMJOBS := $(shell echo $$(($(NUMPROC)*2)))
 
 .PHONY: all clean
 all:
-	mkdir -p $(TEMP_DIR)/
+	mkdir -p $(TEMP_DIR)
 	@echo "project.mk is building for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
 	
 	# Build the sub-projects
@@ -49,14 +50,14 @@ all:
 	make -j$(NUMJOBS) PASS_LINKER_INPUT_VIA_FILE=0 SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C $(BOOT_MK_DIR)
 	
 	# Make the artefacts directory if it does not exist
-	mkdir -p artefacts
+	mkdir -p $(ARTEFACTS_DIR)
 	
 	# Build the DFU package from the app
 	nrfutil pkg generate --hw-version $(COMBINED_PRODUCT_HARDWARE_VERSION) --application-version 1 --application $(APPLICATION) --sd-req $(SD_FWID) --key-file private.pem $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
 	
 	# Merge hex files to form a complete package
 	# In order to boot into the app immediately after flashing, the bootloader's settings page needs to be written
-	nrfutil settings generate --family NRF52 --application $(APPLICATION) --application-version 0 --bootloader-version 0 --bl-settings-version 1 $(BL_SETTINGS)
+	nrfutil settings generate --family $(FAMILY) --application $(APPLICATION) --application-version 0 --bootloader-version 0 --bl-settings-version 1 $(BL_SETTINGS)
 	srec_cat $(SOFTDEVICE) -intel $(APPLICATION) -intel $(BOOTLOADER) -intel $(BL_SETTINGS) -intel -o $(ARTEFACTS_DIR)/img-$(VERSION_IDENTIFIER).hex -intel -address-length=4
 	
 	# For convenience, store this hex file as our latest successful build
@@ -64,9 +65,8 @@ all:
 
 clean:
 	@echo "project.mk is cleaning for $(PRODUCT_NAME) with PRODUCT_ID=$(PRODUCT_ID), PCBVER=$(PCBVER)"
-	rm -rf hex/
 	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C $(APP_MK_DIR) clean
 	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C $(DTM_MK_DIR) clean
 	make SDK_ROOT=$(SDK_ROOT) OUTPUT_DIRECTORY=_build_$(COMBINED_PRODUCT_HARDWARE_VERSION) -C $(BOOT_MK_DIR) clean
-	rm $(ARTEFACTS_DIR)/img-$(VERSION_IDENTIFIER).hex
-	rm $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
+	rm -f $(ARTEFACTS_DIR)/img-$(VERSION_IDENTIFIER).hex
+	rm -f $(ARTEFACTS_DIR)/dfu-$(VERSION_IDENTIFIER).zip
