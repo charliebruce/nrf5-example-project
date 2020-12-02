@@ -78,15 +78,13 @@ build:
       combined_ver: ["1.1", "1.2", "2.1", "2.2"]
   steps:
   - name: Check out code
-    uses: actions/checkout@v2     
-  - name: Set up environment variables
+    uses: actions/checkout@v2
+  - name: Build (Hardware ${{ matrix.combined_ver }})
     env:
       COMBINED_VER: ${{ matrix.combined_ver }}
     run: |
-      echo "::set-env name=PRODUCT_ID::$(cut -d'.' -f1 <<<$COMBINED_VER)"
-      echo "::set-env name=PCBVER::$(cut -d'.' -f2 <<<$COMBINED_VER)"
-  - name: Build (Hardware ${{ matrix.combined_ver }})
-    run: |
+      export PRODUCT_ID=$(cut -d'.' -f1 <<<$COMBINED_VER)
+      export PCBVER=$(cut -d'.' -f2 <<<$COMBINED_VER)
       echo "Building firmware $VERSION for product $PRODUCT_ID - PCB $PCBVER"
       make clean
       make
