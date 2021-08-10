@@ -2,20 +2,20 @@
 # It should be used for building the firmware binaries
 
 # Configure as required here
-CHIP=nrf52832_xxaa
-FAMILY=NRF52 # Note that this must be NRF52840 if using this chip
-BOARD=pca10040
-SD_TYPE=s132
-SD_VERSION=6.1.0
-SD_FWID=0xAF # Look in $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/doc/
-SDK_ROOT=/nrf5/nRF5_SDK_15.2.0
+CHIP=nrf52840_xxaa
+FAMILY=NRF52840 # Note that this must be NRF52840 if using this chip
+BOARD=pca10056
+SD_TYPE=s140
+SD_VERSION=7.2.0
+SD_FWID=0x0100 # Look in $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/doc/
+SDK_ROOT=/nrf5/nRF5_SDK_17.0.2
 
 # Directories used to store files
 TEMP_DIR = tmp
 ARTEFACTS_DIR = artefacts
 APP_MK_DIR = app/src/$(BOARD)/$(SD_TYPE)/armgcc
 DTM_MK_DIR = dtm/src/$(BOARD)/blank/armgcc
-BOOT_MK_DIR = boot/bootloader_secure/$(BOARD)_ble/armgcc
+BOOT_MK_DIR = boot/secure_bootloader/$(BOARD)_$(SD_TYPE)_ble/armgcc
 
 # Files generated as part of the build process
 APPLICATION = $(APP_MK_DIR)/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/$(CHIP).hex

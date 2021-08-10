@@ -17,7 +17,7 @@ You will need the following software:
 * nrfutil
 * Segger RTT viewer
 * An IDE of your choice
-* Some example nRF5 code from the [nRF5 SDK found here](https://developer.nordicsemi.com/nRF5_SDK/nRF5_SDK_v15.x.x/nRF5_SDK_15.2.0_9412b96.zip) - this example project assumes nRF52 SDK 15.2.0 with S132 SoftDevice in various places, but most should work with minor changes.
+* Some example nRF5 code from the [nRF5 SDK found here](https://developer.nordicsemi.com/nRF5_SDK/nRF5_SDK_v17.x.x/) - this example project assumes nRF52 SDK 17.0.2 with S140 SoftDevice on nRF52840 in various places, but other nRF52 ICs should work with minor changes.
 
 You will need to:
 
