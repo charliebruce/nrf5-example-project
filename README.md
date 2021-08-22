@@ -26,7 +26,7 @@ You will need to:
     * `examples/dfu/secure_bootloader` -> `boot`
     * `examples/dtm/direct_test_mode` -> `dtm`
 2. Update example project Makefile(s):
-	- `-DNRF_DFU_HW_VERSION=$(COMBINED_PRODUCT_HARDWARE_VERSION)` added to CFLAGS / ASMFLAGS in the bootloader Makefile (and `COMBINED_PRODUCT_HARDWARE_VERSION` may need to be passed to the Makefile - TODO: Confirm this)
+	- `-DNRF_DFU_HW_VERSION=$(COMBINED_PRODUCT_HARDWARE_VERSION)` added to CFLAGS / ASMFLAGS in the bootloader Makefile
 3. Configure the `project.mk` Makefile to build the example apps
 4. Set up app-specific changes (eg DFU private key setup):
 `
