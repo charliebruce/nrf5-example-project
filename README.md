@@ -69,23 +69,31 @@ script:
 For Github Actions, a similar syntax can be used, however the matrix strategy isn't as flexible. This can be worked around using `cut`:
 
 ``` build.yml
-
-build:
-  name: Build
-  runs-on: ubuntu-latest
-  strategy:
-    matrix:
-      combined_ver: ["1.1", "1.2", "2.1", "2.2"]
-  steps:
-  - name: Check out code
-    uses: actions/checkout@v2
-  - name: Build (Hardware ${{ matrix.combined_ver }})
-    env:
-      COMBINED_VER: ${{ matrix.combined_ver }}
-    run: |
-      export PRODUCT_ID=$(cut -d'.' -f1 <<<$COMBINED_VER)
-      export PCBVER=$(cut -d'.' -f2 <<<$COMBINED_VER)
-      echo "Building firmware $VERSION for product $PRODUCT_ID - PCB $PCBVER"
-      make clean
-      make
+on: push
+name: Build firmware
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        combined_ver: ["1.1", "1.2", "2.1", "2.2"]
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v2
+    - name: Build (Hardware ${{ matrix.combined_ver }})
+      env:
+        COMBINED_VER: ${{ matrix.combined_ver }}
+      run: |
+        export PRODUCT_ID=$(cut -d'.' -f1 <<<$COMBINED_VER)
+        export PCBVER=$(cut -d'.' -f2 <<<$COMBINED_VER)
+        echo "Building firmware $VERSION for product $PRODUCT_ID - PCB $PCBVER"
+        make clean
+        make
+    - name: Upload artefacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ matrix.combined_ver }}
+        path: artefacts/
+        if-no-files-found: error
 ```
