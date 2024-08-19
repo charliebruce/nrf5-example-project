@@ -51,22 +51,7 @@ Overrides default Makefile values with the following:
 
 ## Continuous Integration
 
-If your build server is capable of launching new Docker instances (eg Travis) you can do something similar to the following:
-
-```
-env:
-  matrix:
-    - PRODUCT_ID=1 PCBVER=1
-    - PRODUCT_ID=1 PCBVER=2
-    - PRODUCT_ID=2 PCBVER=1
-    - PRODUCT_ID=2 PCBVER=2
-
-script: 
-  - make PRODUCT_ID=$PRODUCT_ID PCBVER=$PCBVER clean
-  - make PRODUCT_ID=$PRODUCT_ID PCBVER=$PCBVER
-```
-
-For Github Actions, a similar syntax can be used, however the matrix strategy isn't as flexible. This can be worked around using `cut`:
+For Github Actions, create a workflow similar to:
 
 ``` build.yml
 on: push
@@ -80,18 +65,15 @@ jobs:
         combined_ver: ["1.1", "1.2", "2.1", "2.2"]
     steps:
     - name: Check out code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
     - name: Build (Hardware ${{ matrix.combined_ver }})
       env:
-        COMBINED_VER: ${{ matrix.combined_ver }}
+        HW: ${{ matrix.combined_ver }}
       run: |
-        export PRODUCT_ID=$(cut -d'.' -f1 <<<$COMBINED_VER)
-        export PCBVER=$(cut -d'.' -f2 <<<$COMBINED_VER)
-        echo "Building firmware $VERSION for product $PRODUCT_ID - PCB $PCBVER"
         make clean
         make
     - name: Upload artefacts
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: ${{ matrix.combined_ver }}
         path: artefacts/
