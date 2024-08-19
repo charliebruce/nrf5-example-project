@@ -6,8 +6,8 @@ CHIP=nrf52840_xxaa
 FAMILY=NRF52840 # Note that this must be NRF52840 if using this chip
 BOARD=pca10056
 SD_TYPE=s140
-SD_VERSION=7.2.0
-SD_FWID=0x0100 # Look in $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/doc/
+SD_VERSION=7.3.0
+SD_FWID=0x0123 # Look in the SoftDevice's release notes for the correct value
 SDK_ROOT=/nrf5/nRF5_SDK_17.1.0
 
 # Directories used to store files
@@ -20,7 +20,7 @@ BOOT_MK_DIR = boot/secure_bootloader/$(BOARD)_$(SD_TYPE)_ble/armgcc
 # Files generated as part of the build process
 APPLICATION = $(APP_MK_DIR)/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/$(CHIP).hex
 BOOTLOADER = $(BOOT_MK_DIR)/_build_$(COMBINED_PRODUCT_HARDWARE_VERSION)/$(CHIP)_$(SD_TYPE).hex
-SOFTDEVICE = $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/hex/$(SD_TYPE)_nrf52_$(SD_VERSION)_softdevice.hex
+SOFTDEVICE = softdevice/$(SD_TYPE)_nrf52_$(SD_VERSION)/$(SD_TYPE)_nrf52_$(SD_VERSION)_softdevice.hex
 BL_SETTINGS = $(TEMP_DIR)/bootloadersettings.hex
 
 # Human-readable identifier for artefacts
