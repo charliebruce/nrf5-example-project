@@ -8,7 +8,7 @@ BOARD=pca10056
 SD_TYPE=s140
 SD_VERSION=7.2.0
 SD_FWID=0x0100 # Look in $(SDK_ROOT)/components/softdevice/$(SD_TYPE)/doc/
-SDK_ROOT=/nrf5/nRF5_SDK_17.0.2
+SDK_ROOT=/nrf5/nRF5_SDK_17.1.0
 
 # Directories used to store files
 TEMP_DIR = tmp

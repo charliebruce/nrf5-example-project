@@ -8,13 +8,12 @@
 #   * flash - flash the most recent build
 #   * erase - wipe the connected device
 
-# Makefile defaults to building the first product
-PRODUCT_ID?=1
+# Makefile defaults to building this product and hardware version
+HW?=1.1
 
-# Makefile defaults to building for the latest version of the PCB
-ifeq ($(PRODUCT_ID),1)
-PCBVER?=1
-endif
+HW_LIST = $(subst ., ,$(HW))
+PRODUCT_ID ?= $(word 1,$(HW_LIST))
+PCBVER ?= $(word 2,$(HW_LIST))
 
 # Get the configuration for this combination, and check that the given PRODUCT_ID and PCBVER are valid.
 include products.mk

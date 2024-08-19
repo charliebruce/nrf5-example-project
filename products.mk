@@ -24,7 +24,7 @@ endif
 
 ifeq ($(PRODUCT_ID),1)
 PRODUCT_NAME=Example
-BUILD_ENVIRONMENT=ghcr.io/charliebruce/nrf5-docker-build:sdk-17.0.2
+BUILD_ENVIRONMENT=ghcr.io/charliebruce/nrf5-docker-build:sdk-17.1.0
 PCBVERS = 1
 endif
 
