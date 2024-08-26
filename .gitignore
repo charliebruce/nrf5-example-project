@@ -3,3 +3,6 @@ artefacts/*
 tmp/*
 *.hex
 *_build*
+
+# macOS directory stores
+*.DS_Store
